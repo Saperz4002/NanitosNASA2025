@@ -1,0 +1,95 @@
+import numpy as np
+import tensorflow as tf
+import lightkurve as lk
+import json
+from pathlib import Path
+
+if 'EXP_DIR' in globals():
+    EXP_DIR = Path(EXP_DIR)
+else:
+    EXP_DIR = Path(sorted(Path("./models").glob("exo_gan_*"))[-1])
+
+disc_saved_model_path = EXP_DIR / "discriminator"
+disc_keras_path = EXP_DIR / "discriminator.keras"
+
+if disc_keras_path.exists():
+    discriminator = tf.keras.models.load_model(disc_keras_path)
+elif disc_saved_model_path.exists():
+    discriminator = tf.keras.layers.TFSMLayer(str(disc_saved_model_path), call_endpoint='serving_default')
+else:
+    raise FileNotFoundError(f"Discriminator model not found at either {disc_keras_path} or {disc_saved_model_path}")
+
+info_path = EXP_DIR / "run_info.json"
+with open(info_path) as f:
+    info = json.load(f)
+
+CURVE_LENGTH = info["CURVE_LENGTH"]
+class_mapping = {int(k): v for k, v in info["class_mapping"].items()}
+
+def normalize_flux(flux):
+    flux_min, flux_max = np.min(flux), np.max(flux)
+    if flux_max - flux_min == 0:
+        return np.zeros_like(flux)
+    return 2 * (flux - flux_min) / (flux_max - flux_min) - 1
+
+def get_real_transit_curve_for_infer(target, curve_length):
+    try:
+        if isinstance(target, int):
+            target = f'KIC {target}'
+        result = lk.search_lightcurve(target, author='Kepler', cadence='long')
+        if len(result) == 0:
+            print("No lightcurve found for:", target)
+            return None
+        lc = result[:2].download_all().stitch().flatten(window_length=901).remove_outliers()
+        period = np.linspace(1, 20, 1000)
+        bls = lc.to_periodogram(method='bls', period=period, frequency_factor=500)
+        planet_period = bls.period_at_max_power
+        t0 = bls.transit_time_at_max_power
+        duration = bls.duration_at_max_power
+        model = bls.get_transit_model(period=planet_period, transit_time=t0, duration=duration)
+        folded_model = model.fold(planet_period, t0)
+        flux = normalize_flux(folded_model.flux.value)
+        if len(flux) != curve_length:
+            if len(flux) < curve_length:
+                flux = np.pad(flux, (0, curve_length - len(flux)), mode='constant')
+            else:
+                flux = flux[:curve_length]
+        return flux.reshape(curve_length, 1).astype(np.float32)
+    except Exception as e:
+        print(f"Error while fetching/preprocessing {target}: {e}")
+        return None
+
+def predict_kepid(kepid_or_name, realness_threshold=0.5):
+    x = get_real_transit_curve_for_infer(kepid_or_name, CURVE_LENGTH)
+    if x is None:
+        return
+    x = np.expand_dims(x, axis=0)
+    if isinstance(discriminator, tf.keras.layers.TFSMLayer):
+        predictions = discriminator(x)
+        pred_realness = predictions.get('realness_output')
+        pred_class_probs = predictions.get('class_output')
+        if pred_realness is None or pred_class_probs is None:
+            print("Error: Could not find 'realness_output' or 'class_output' in TFSMLayer outputs.")
+            print("Available outputs:", predictions.keys())
+            return
+        pred_realness = pred_realness.numpy()
+        pred_class_probs = pred_class_probs.numpy()
+    elif isinstance(discriminator, tf.keras.Model):
+        pred_realness, pred_class_probs = discriminator.predict(x, verbose=0)
+    else:
+        print("Error: Discriminator model loaded in an unexpected format.")
+        return
+    real_score = float(pred_realness[0, 0])
+    probs = pred_class_probs[0]
+    pred_class_id = int(np.argmax(probs))
+    pred_class_name = class_mapping[pred_class_id]
+    print("==== Prediction ====")
+    print(f"Target: {kepid_or_name}")
+    print(f"Realness score (0..1): {real_score:.3f}  -> {'REAL' if real_score >= realness_threshold else 'FAKE-like'}")
+    print("Class probabilities:")
+    for i, p in enumerate(probs):
+        print(f"  {i} = {class_mapping[i]:<14} : {p:.4f}")
+    print(f"\nPredicted class: {pred_class_id} ({pred_class_name})")
+
+    # --------- Example usages ---------
+predict_kepid(11502218)   
