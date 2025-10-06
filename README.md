@@ -1,6 +1,8 @@
 # NanitosNASA2025
 
-Exoplanet candidate triage with **NASA Kepler** light curves and a lightweight **adversarial classifier**.  We use **Lightkurve** to fetch/stitch/flatten time series, run **BLS** to phase-align transit signals, and train a **dual-head 1D-CNN**: one head scores **real vs. fake**, the other predicts **FALSE POSITIVE / CANDIDATE / CONFIRMED**. A small generator produces synthetic negatives to sharpen the discriminator.
+Exoplanet candidate triage with **NASA Kepler** light curves and a lightweight **adversarial classifier**.  
+We use **Lightkurve** to fetch/stitch/flatten time series, run **BLS** to phase-align transit signals, and train a **dual-head 1D-CNN**: one head scores **real vs. fake**, the other predicts **FALSE POSITIVE / CANDIDATE / CONFIRMED**. 
+A small generator produces synthetic negatives to sharpen the discriminator.
 ---
 ##  About this Project
 
