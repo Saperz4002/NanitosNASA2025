@@ -14,7 +14,7 @@ This repository was created for the **2025 NASA Space Apps Challenge** —
 - **Team:** Nanitos  
 - **Local Event:** Ensenada, Mexico  
 - **Members:** Saúl Eduardo Pérez Herrera, José Emiliano Villalobos, Ximena León Gómez, Diego Ángel Noriega Ruiz, Roberto Carlos Garcés Labastida, Carolina Valdivia Padilla
-
+- **Report:** Take a look at the report of this project entitled [Nanitos_Report.pdf](https://github.com/Saperz4002/NanitosNASA2025/blob/main/Nanitos_Report.pdf)
 ---
 
 ##  Features
