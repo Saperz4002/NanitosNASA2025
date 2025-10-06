@@ -1,14 +1,11 @@
 # NanitosNASA2025
 
-Exoplanet candidate triage with **NASA Kepler** light curves and a lightweight **adversarial classifier**.  
-We use **Lightkurve** to fetch/stitch/flatten time series, run **BLS** to phase-align transit signals, and train a **dual-head 1D-CNN**: one head scores **real vs. fake**, the other predicts **FALSE POSITIVE / CANDIDATE / CONFIRMED**.  
-A small generator produces synthetic negatives to sharpen the discriminator.
-
+Exoplanet candidate triage with **NASA Kepler** light curves and a lightweight **adversarial classifier**.  We use **Lightkurve** to fetch/stitch/flatten time series, run **BLS** to phase-align transit signals, and train a **dual-head 1D-CNN**: one head scores **real vs. fake**, the other predicts **FALSE POSITIVE / CANDIDATE / CONFIRMED**. A small generator produces synthetic negatives to sharpen the discriminator.
 ---
 ##  About this Project
 
 This repository was created for the **2025 NASA Space Apps Challenge** —  
-**“A World Away: Hunting for Exoplanets with AI.”**
+**[“A World Away: Hunting for Exoplanets with AI.”] (https://www.spaceappschallenge.org/2025/challenges/a-world-away-hunting-for-exoplanets-with-ai/)** 
 
 - **Team:** Nanitos  
 - **Local Event:** Ensenada, Mexico  
