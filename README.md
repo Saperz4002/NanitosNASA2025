@@ -16,5 +16,3 @@ A small generator produces synthetic negatives to sharpen the discriminator.
 ## Live GUI
 
 **Try the GUI here ➜ [findexoplanetsnanitos.us/backmod.html](https://findexoplanetsnanitos.us/backmod.html)**
-
-> Web demo for quick exoplanet triage and visualization.
