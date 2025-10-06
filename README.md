@@ -6,20 +6,15 @@ A small generator produces synthetic negatives to sharpen the discriminator.
 
 ---
 
-## ✨ Features
-- 🔭 **MAST/Kepler via Lightkurve**: long-cadence LCs, quarter stitching, flattening, outlier removal, BLS.
-- 🧠 **Dual-head discriminator**: real/fake (sigmoid) + 3-class softmax (FP/Candidate/Confirmed).
-- 🧪 **Adversarial negatives**: generator outputs fake light curves for robust training.
-- 🧰 **Probe script**: load a saved run and predict for a given **KIC/kepid** or Kepler name.
+## Features
+-  **MAST/Kepler via Lightkurve**: long-cadence LCs, quarter stitching, flattening, outlier removal, BLS.
+-  **Dual-head discriminator**: real/fake (sigmoid) + 3-class softmax (FP/Candidate/Confirmed).
+-  **Adversarial negatives**: generator outputs fake light curves for robust training.
+-  **Probe script**: load a saved run and predict for a given **KIC/kepid** or Kepler name.
 
 ---
+## Live GUI
 
-## 📦 Installation
+**Try the GUI here ➜ [findexoplanetsnanitos.us/backmod.html](https://findexoplanetsnanitos.us/backmod.html)**
 
-```bash
-# Python 3.10+ recommended
-python -m venv .venv
-source .venv/bin/activate   # Windows: .venv\Scripts\activate
-
-pip install -U pip
-pip install lightkurve tensorflow scikit-learn numpy pandas matplotlib tqdm
+> Web demo for quick exoplanet triage and visualization.
