@@ -5,7 +5,16 @@ We use **Lightkurve** to fetch/stitch/flatten time series, run **BLS** to phase-
 A small generator produces synthetic negatives to sharpen the discriminator.
 
 ---
+##  About this Project
 
+This repository was created for the **2025 NASA Space Apps Challenge** —  
+**“A World Away: Hunting for Exoplanets with AI.”**
+
+- **Team:** Nanitos  
+- **Local Event:** Ensenada, Mexico  
+- **Member(s):** Saúl Eduardo Pérez Herrera, José Emiliano Villalobos, Ximena León Gómez, Diego Ángel Noriega Ruiz, Roberto Carlos Garcés Labastida, Carolina Valdivia Padilla
+
+---
 ## Features
 -  **MAST/Kepler via Lightkurve**: long-cadence LCs, quarter stitching, flattening, outlier removal, BLS.
 -  **Dual-head discriminator**: real/fake (sigmoid) + 3-class softmax (FP/Candidate/Confirmed).
